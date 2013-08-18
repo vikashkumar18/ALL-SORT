@@ -1,0 +1,161 @@
+ <script type="text/javascript">SyntaxHighlighter.highlight();</script>
+ <%if (token == 'lg'){%>
+ <pre class="brush: js;">
+ <!DOCTYPE html>
+ <meta charset="utf-8">
+ <style>
+
+ body {
+   margin-top: 225px;
+ }
+
+ line {
+   stroke: #000;
+   stroke-width: 1.5px;
+ }
+
+ </style>
+ <body>
+ <script src="http://d3js.org/d3.v3.min.js"></script>
+ <script>
+
+ // Based on http://vis.stanford.edu/protovis/ex/sort.html
+ // Based on work by Robert Sedgewick
+
+ var w = 960,
+     h = 50;
+     
+ var n = 240,
+     height = d3.scale.linear().domain([0,n]).range([5,245]),
+     x = d3.scale.linear().domain([0, n]).range([h, w - h]),
+     a = d3.scale.linear().domain([0, n - 1]).range([90 + 60, 270 - 60]),
+     data = d3.shuffle(d3.range(n)),
+     duration = 0;
+
+ var svg = d3.select("body").append("svg")
+     .attr("width", w)
+     .attr("height", 500);
+
+ var line = svg.selectAll("line")
+     .data(data)
+   .enter().append("line")
+     .attr("x1", 0)
+     .attr("y1", 245)
+     .attr("x2", 0)
+     .attr("y2", function(d){return (245-height(d));})
+     .attr("transform", transform);
+
+     <%}else{%>
+      <pre class="brush: js;">
+      <!DOCTYPE html>
+       <meta charset="utf-8">
+       <style>
+
+       body {
+         margin-top: 225px;
+       }
+
+       line {
+         stroke: #000;
+         stroke-width: 1.5px;
+       }
+
+       </style>
+       <body>
+
+       <script src="http://d3js.org/d3.v3.min.js"></script>
+       <script>
+
+       // Based on http://vis.stanford.edu/protovis/ex/sort.html
+       // Based on work by Robert Sedgewick
+
+       var w = 960,
+           h = 50;
+           
+       var n = 240,
+           height = d3.scale.linear().domain([0,n]).range([5,245]),
+           x = d3.scale.linear().domain([0, n]).range([h, w - h]),
+           a = d3.scale.linear().domain([0, n - 1]).range([-30,30]),
+           data = d3.shuffle(d3.range(n)),
+           duration = 0;
+
+       var svg = d3.select("body").append("svg")
+           .attr("width", w)
+           .attr("height", 500);
+
+           var line = svg.selectAll("line")
+           .data(data)
+           .enter().append("line")
+           .attr("x1", 0)
+           .attr("y1", 100)
+           .attr("x2", 0)
+           .attr("y2", 100+h)
+           .attr("transform", transform);
+
+<%}%>
+ start();
+
+ // Start the animation!
+ function start() {
+   var passes = bubbleSort(data).reverse();
+
+   update();
+
+   function update() {
+     var pass = passes.pop();
+
+     line.data(pass, Number)
+       .transition()
+         .duration(0)
+         .attr("transform", transform);
+
+     if (passes.length) {
+
+       setTimeout(update, duration);
+     } else {
+       d3.shuffle(data);
+       setTimeout(start, duration );
+     }
+   }
+ }
+<%if(token =="lg"){%>
+ function transform(d, i) {
+   
+   return "translate(" + x(i) + "," + h + ")";
+ }
+ <%}else{%>
+  function transform(d, i) {
+    
+    return "translate(" + x(i) + ")rotate(" + a(d) + ","+0+","+(100+h)+")";
+  }
+  <%}%>
+
+ // Sorts the specified array using bubble-sort, returning an array of
+ // arrays representing the state of the specified array after each swap.
+
+ function bubbleSort(a)
+ {
+    var passes = [];
+     console.log("before sort "+a);
+     var swapped;
+     do {
+         swapped = false;
+         for (var i=0; i < a.length-1; i++) {
+             if (a[i] > a[i+1]) {
+                 var temp = a[i];
+                 a[i] = a[i+1];
+                 a[i+1] = temp;
+                 swapped = true;
+                 passes.push(a.slice());
+             }
+
+         }
+         
+     } while (swapped);
+     
+     return passes;
+ }
+
+ </script>
+
+</pre>

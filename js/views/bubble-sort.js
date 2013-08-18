@@ -1,9 +1,21 @@
-define([ 'jquery', 'underscore', 'backbone','d3','custom'], 
-	function($, _, Backbone,d3,custom)
+define([ 'jquery', 'underscore', 'backbone','d3','custom',/*'shCore',
+	'SyntaxHighlighter',*/
+	'text!templates/bubble-sort.html'], 
+	function($, _, Backbone,d3,custom,/*shCore,SyntaxHighlighter,*/BubbleSortTemplate)
 	{
 		var BubbleSortView = Backbone.View.extend({
+			el: $("<div />"),
 			initialize:function(){},
-			render:function(){},
+			render:function(options){
+				
+				var template = _.template(BubbleSortTemplate,options);
+				this.$el.html(template);
+
+				$("#code-div").html(this.$el);
+				$.scrollToTag("id=code-div");
+				
+
+			},
 			sort:function(){
 
 				

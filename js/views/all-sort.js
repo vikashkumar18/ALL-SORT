@@ -23,7 +23,8 @@ define([ 'jquery',
 			events:{
 				'click #line':'lineGraph',
 				'click #hay-stack':'hayStackGraph',
-				'click #refresh':'refresh'
+				'click #refresh':'refresh',
+				'click #code':'showCode'
 			},
 			initialize:function(){
 				var n=240;
@@ -63,9 +64,11 @@ define([ 'jquery',
 	lineGraph:function(){
 		$.defaultHorizontalNav(1);
 		this.token="lg";
+		this.cleanCodeArea();
 				if(this.sortType==undefined){
 					this.cancelPreviousUpdate=true;
 					$.defaultSideMenu(1);
+					$("#sort-head").text("Bubble-Sort");
 					if(!(this.view instanceof BubbleSortView)){ // clear the passes array to store the new arrangement of sorted data
 					this.passes = [];
 					this.callBubbleSort();
@@ -82,9 +85,11 @@ define([ 'jquery',
 		
 		$.defaultHorizontalNav(2);
 		this.token="hs";
+		this.cleanCodeArea();
 		if(this.options.sortType==undefined){
 			this.cancelPreviousUpdate=true;
 			$.defaultSideMenu(1);
+			$("#sort-head").text("Bubble-Sort");
 			if(!(this.view instanceof BubbleSortView)){ // clear the passes array to store the new arrangement of sorted data
 				this.passes = [];
 				this.callBubbleSort();
@@ -189,6 +194,13 @@ define([ 'jquery',
 			setTimeout(this.drawLineTransition,this.duration+10);
 		}
 		
+	},
+	showCode:function(){
+		console.log("sc");
+		this.view.render({token:this.token});
+	},
+	cleanCodeArea:function(){
+		$("#code-div").empty();
 	}
 
 

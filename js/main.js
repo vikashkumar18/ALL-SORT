@@ -7,10 +7,13 @@ require.config({
 		      deps: ['underscore', 'jquery'],
 		      exports: 'Backbone'
 		    },
-		  	shBrushJScript:{
+		   /* shCore:{
+		    	exports:'shCore'
+		    },
+		  	SyntaxHighlighter:{
 		  		deps:['shCore'],
-		  		exports: 'shBrushJScript'
-		  	},
+		  		exports: 'SyntaxHighlighter'
+		  	},*/
 		  	bootstrap:{
 		  		deps:['jquery'],
 		  		exports:'bootstrap'
@@ -26,9 +29,9 @@ require.config({
     backbone: '../libs/backbone',
     templates: '../templates',
     d3: '../libs/d3.v3.min',
-    shCore: '../libs/shCore',
-    shBrushJScript: '../libs/shBrushJScript',
-    bootstrap :'../libs/bootstrap'
+    //shCore: '../libs/shCore',
+    //SyntaxHighlighter: '../libs/shBrushJScript',
+   bootstrap :'../libs/bootstrap'
   }
 
 });
