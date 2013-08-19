@@ -14,6 +14,11 @@ define([ 'jquery', 'underscore', 'backbone','d3','custom'],
 				this.h = 100;
 				this.space=this.h;
 				this.data = this.model.get('data');
+				if(this.data.array!=undefined){
+					this.data = this.data.array;
+
+				}
+
 				this.duration = this.options.duration;
 				var n = 240;
 
@@ -35,12 +40,36 @@ define([ 'jquery', 'underscore', 'backbone','d3','custom'],
 				.attr("transform", this.lineGraphTransform);
 			},
 			render:function(){
+				var that = this;
 				this.data = this.model.get('data');
-				this.line.data(this.data, Number)
-				.transition()
-				.duration (this.duration)
-				.attr("transform", this.lineGraphTransform);
+				if(this.data.array!= undefined){
+					this.line.data(this.data.array, Number)
+					.attr("stroke",function(i){
+					      if(i>=that.data.start && i<=that.data.pivot){
+					        
+					        return "green";
+					      }else if(i>that.data.pivot && i<=that.data.end){
+					        return "orange";
+					      }else{
+					        return "black";
+					      }
+					    })
+					.transition()
+					.duration (this.duration)
+					.attr("transform", this.lineGraphTransform);
 
+				}else{
+					this.line.data(this.data, Number)
+					.attr("stroke",function(i){
+					      
+					        return "black";
+					      
+					    })
+					.transition()
+					.duration (this.duration)
+					.attr("transform", this.lineGraphTransform);
+
+				}
 			},
 			lineGraphTransform:function(d,i){
  			return "translate(" + this.x(i) + ")rotate(" + this.a(d) + ","+0+","+(100+this.h)+")";

@@ -6,6 +6,7 @@ define([ 'jquery',
 	 'views/bubble-sort',
 	 'views/line-graph-view',
 	 'views/hay-stack-view',
+	 'views/top-down-merge-sort',
 	 'text!templates/all-sort.html'], 
 	function($,
 	 _,
@@ -15,6 +16,7 @@ define([ 'jquery',
 	  BubbleSortView,
 	  LineGraphView,
 	  HayStackGraphView,
+	  TDMergeSortView,
 	  AllSortTemplate)
 	{
 
@@ -49,12 +51,15 @@ define([ 'jquery',
 	
 	
 	render:function(obj){
+		//$.scrollToTag("id=content");
 		
+		this.cancelPreviousUpdate=true;
 		this.sortType = obj.sortType;
 		var template = _.template(AllSortTemplate);	
 		
-		this.$el.append(template);					//appending template to view's element.
+		this.$el.html(template);					//appending template to view's element.
 		$("#content").html(this.$el);				//adding view's element to content
+		this.delegateEvents();
 		$("#line").trigger('click');
 
 	},
@@ -62,10 +67,11 @@ define([ 'jquery',
 	
 
 	lineGraph:function(){
+		
 		$.defaultHorizontalNav(1);
 		this.token="lg";
 		this.cleanCodeArea();
-				if(this.sortType==undefined){
+				if(this.sortType==undefined || this.sortType=="bbs"){
 					this.cancelPreviousUpdate=true;
 					$.defaultSideMenu(1);
 					$("#sort-head").text("Bubble-Sort");
@@ -77,6 +83,18 @@ define([ 'jquery',
 
 					setTimeout(this.drawLineTransition,this.duration+10);
 										
+				}else if(this.sortType=="tms"){
+					console.log("tms");
+					this.cancelPreviousUpdate=true;
+					$.defaultSideMenu(2);
+					$("#sort-head").text("Top-Down Merge Sort");
+					if(!(this.view instanceof TDMergeSortView)){ // clear the passes array to store the new arrangement of sorted data
+					this.passes = [];
+					this.callTDMergeSort();
+
+					}
+
+					setTimeout(this.drawLineTransition,this.duration+10);
 				}
 
 		
@@ -86,7 +104,7 @@ define([ 'jquery',
 		$.defaultHorizontalNav(2);
 		this.token="hs";
 		this.cleanCodeArea();
-		if(this.options.sortType==undefined){
+		if(this.sortType==undefined || this.sortType=="bbs"){
 			this.cancelPreviousUpdate=true;
 			$.defaultSideMenu(1);
 			$("#sort-head").text("Bubble-Sort");
@@ -97,12 +115,27 @@ define([ 'jquery',
 			}
 			setTimeout(this.drawHayStackTransition,this.duration+10);
 								
+		} else if(this.sortType=="tms"){
+			this.cancelPreviousUpdate=true;
+			$.defaultSideMenu(2);
+			$("#sort-head").text("Top-Down Merge Sort");
+			if(!(this.view instanceof TDMergeSortView)){ // clear the passes array to store the new arrangement of sorted data
+			this.passes = [];
+			this.callTDMergeSort();
+
+			}
+
+			setTimeout(this.drawHayStackTransition,this.duration+10);
 		}
 	},
 	callBubbleSort:function(){
 		this.view = new BubbleSortView({passes:this.passes,data:this.data.slice()});
 		this.view.sort();		
 
+	},
+	callTDMergeSort:function(){
+		this.view = new TDMergeSortView({passes:this.passes,data:this.data.slice()});
+		this.view.sort();
 	},
 	drawLineTransition:function(){
 		console.log("func called");
