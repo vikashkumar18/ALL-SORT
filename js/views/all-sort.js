@@ -1,23 +1,27 @@
 define([ 'jquery', 
 	'underscore',
-	 'backbone',
-	 'd3',
-	 'custom',
-	 'views/bubble-sort',
-	 'views/line-graph-view',
-	 'views/hay-stack-view',
-	 'views/top-down-merge-sort',
-	 'text!templates/all-sort.html'], 
+	'backbone',
+	'd3',
+	'custom',
+	'views/bubble-sort',
+	'views/line-graph-view',
+	'views/hay-stack-view',
+	'views/top-down-merge-sort',
+	'views/bottom-up-merge-sort',
+	'views/quick-sort',
+	'text!templates/all-sort.html'], 
 	function($,
-	 _,
-	  Backbone,
-	  d3,
-	  custom,
-	  BubbleSortView,
-	  LineGraphView,
-	  HayStackGraphView,
-	  TDMergeSortView,
-	  AllSortTemplate)
+		_,
+		Backbone,
+		d3,
+		custom,
+		BubbleSortView,
+		LineGraphView,
+		HayStackGraphView,
+		TDMergeSortView,
+		BUMergeSortView,
+		QuickSortView,
+		AllSortTemplate)
 	{
 
 		var AllSortView = Backbone.View.extend({
@@ -43,14 +47,14 @@ define([ 'jquery',
 				_.bindAll(this,'render','refresh','drawLineTransition','drawHayStackTransition','lineGraph','hayStackGraph');
 
 				
-		
-		
-		
-	},
-	
-	
-	
-	render:function(obj){
+
+
+
+			},
+
+
+
+			render:function(obj){
 		//$.scrollToTag("id=content");
 		
 		this.cancelPreviousUpdate=true;
@@ -71,88 +75,147 @@ define([ 'jquery',
 		$.defaultHorizontalNav(1);
 		this.token="lg";
 		this.cleanCodeArea();
-				if(this.sortType==undefined || this.sortType=="bbs"){
-					this.cancelPreviousUpdate=true;
-					$.defaultSideMenu(1);
-					$("#sort-head").text("Bubble-Sort");
+		if(this.sortType==undefined || this.sortType=="bbs"){
+			this.cancelPreviousUpdate=true;
+			$.defaultSideMenu(1);
+			$("#sort-head").text("Bubble-Sort");
 					if(!(this.view instanceof BubbleSortView)){ // clear the passes array to store the new arrangement of sorted data
-					this.passes = [];
-					this.callBubbleSort();
+						this.passes = [];
+						this.callBubbleSort();
 
 					}
 
 					setTimeout(this.drawLineTransition,this.duration+10);
-										
+
 				}else if(this.sortType=="tms"){
 					console.log("tms");
 					this.cancelPreviousUpdate=true;
 					$.defaultSideMenu(2);
 					$("#sort-head").text("Top-Down Merge Sort");
 					if(!(this.view instanceof TDMergeSortView)){ // clear the passes array to store the new arrangement of sorted data
-					this.passes = [];
-					this.callTDMergeSort();
+						this.passes = [];
+						this.callTDMergeSort();
+
+					}
+
+					setTimeout(this.drawLineTransition,this.duration+10);
+				}else if(this.sortType=="bums"){
+					console.log("bums");
+					this.cancelPreviousUpdate=true;
+					$.defaultSideMenu(3);
+					$("#sort-head").text("Bottom-Up Merge Sort");
+					if(!(this.view instanceof BUMergeSortView)){ // clear the passes array to store the new arrangement of sorted data
+						this.passes = [];
+						this.callBUMergeSort();
+
+					}
+
+					setTimeout(this.drawLineTransition,this.duration+10);
+				}else if(this.sortType=="qs"){
+					console.log("qs");
+					this.cancelPreviousUpdate=true;
+					$.defaultSideMenu(4);
+					$("#sort-head").text("Quick Sort");
+					if(!(this.view instanceof QuickSortView)){ // clear the passes array to store the new arrangement of sorted data
+						this.passes = [];
+						this.callQuickSort();
 
 					}
 
 					setTimeout(this.drawLineTransition,this.duration+10);
 				}
 
-		
-	},
-	hayStackGraph:function(){
-		
-		$.defaultHorizontalNav(2);
-		this.token="hs";
-		this.cleanCodeArea();
-		if(this.sortType==undefined || this.sortType=="bbs"){
-			this.cancelPreviousUpdate=true;
-			$.defaultSideMenu(1);
-			$("#sort-head").text("Bubble-Sort");
+
+			},
+			hayStackGraph:function(){
+
+				$.defaultHorizontalNav(2);
+				this.token="hs";
+				this.cleanCodeArea();
+				if(this.sortType==undefined || this.sortType=="bbs"){
+					this.cancelPreviousUpdate=true;
+					$.defaultSideMenu(1);
+					$("#sort-head").text("Bubble-Sort");
 			if(!(this.view instanceof BubbleSortView)){ // clear the passes array to store the new arrangement of sorted data
 				this.passes = [];
 				this.callBubbleSort();
 
 			}
 			setTimeout(this.drawHayStackTransition,this.duration+10);
-								
+
 		} else if(this.sortType=="tms"){
 			this.cancelPreviousUpdate=true;
 			$.defaultSideMenu(2);
 			$("#sort-head").text("Top-Down Merge Sort");
 			if(!(this.view instanceof TDMergeSortView)){ // clear the passes array to store the new arrangement of sorted data
-			this.passes = [];
-			this.callTDMergeSort();
+				this.passes = [];
+				this.callTDMergeSort();
 
 			}
 
 			setTimeout(this.drawHayStackTransition,this.duration+10);
-		}
-	},
-	callBubbleSort:function(){
-		this.view = new BubbleSortView({passes:this.passes,data:this.data.slice()});
-		this.view.sort();		
+		}else if(this.sortType=="bums"){
+			this.cancelPreviousUpdate=true;
+			$.defaultSideMenu(3);
+			$("#sort-head").text("Bottom-Up Merge Sort");
+					if(!(this.view instanceof BUMergeSortView)){ // clear the passes array to store the new arrangement of sorted data
+						this.passes = [];
+						this.callBUMergeSort();
 
-	},
-	callTDMergeSort:function(){
-		this.view = new TDMergeSortView({passes:this.passes,data:this.data.slice()});
-		this.view.sort();
-	},
-	drawLineTransition:function(){
-		console.log("func called");
-		this.cancelPreviousUpdate=false;
-		var pass;											
-		var passes;
-		passes=this.passes.slice().reverse();
-		this.duration = 250;
+					}
+
+					setTimeout(this.drawHayStackTransition,this.duration+10);
+				}else if(this.sortType=="qs"){
+					console.log("qs");
+					this.cancelPreviousUpdate=true;
+					$.defaultSideMenu(4);
+					$("#sort-head").text("Quick Sort");
+					if(!(this.view instanceof QuickSortView)){ // clear the passes array to store the new arrangement of sorted data
+						this.passes = [];
+						this.callQuickSort();
+
+					}
+
+					setTimeout(this.drawHayStackTransition,this.duration+10);
+				}
+			},
+			callBubbleSort:function(){
+				this.view = new BubbleSortView({passes:this.passes,data:this.data.slice()});
+				this.viewType="BubbleSort";
+				this.view.sort();		
+
+			},
+			callTDMergeSort:function(){
+				this.view = new TDMergeSortView({passes:this.passes,data:this.data.slice()});
+				this.viewType="TDMergeSort";
+				this.view.sort();
+			},
+			callBUMergeSort:function(){
+				this.view = new BUMergeSortView({passes:this.passes,data:this.data.slice()});
+				this.viewType="BUMergeSort";
+				this.view.sort();
+			},
+			callQuickSort:function(){
+				this.view = new QuickSortView({passes:this.passes,data:this.data.slice()});
+				this.viewType="QuickSort";
+				this.view.sort();
+			},
+			drawLineTransition:function(){
+				console.log("func called");
+				this.cancelPreviousUpdate=false;
+				var pass;											
+				var passes;
+				passes=this.passes.slice().reverse();
+				this.duration = 250;
 				
-		if(this.transitionView){
-		 this.transitionView.remove();
+				if(this.transitionView){
+					this.transitionView.remove();
 		 //this.cancelPreviousUpdate=false;
 		}else{
 
 		}
 		this.model.set({data:this.data});
-		this.transitionView = new LineGraphView({duration:this.duration,model:this.model});// shows the initial random distribute data	
+		this.transitionView = new LineGraphView({view:this.viewType,duration:this.duration,model:this.model});// shows the initial random distribute data	
 		
 		var that=this;
 		update();
@@ -167,8 +230,8 @@ define([ 'jquery',
 			pass = passes.pop();
 			that.model.set({data:pass});
 			if(passes.length!=0){
-			setTimeout(update,that.duration);
-		}
+				setTimeout(update,that.duration);
+			}
 
 		}
 		
@@ -182,15 +245,16 @@ define([ 'jquery',
 		this.cancelPreviousUpdate=false;
 		passes=this.passes.slice().reverse();
 		this.duration = 250;
-				
+
 		if(this.transitionView){
-		 this.transitionView.remove();
+			this.transitionView.remove();
 		}else{
 		//	this.cancelPreviousUpdate=false;
-		}
+	}
+
+	this.model.set({data:this.data});
 		
-		this.model.set({data:this.data});
-		this.transitionView = new HayStackGraphView({duration:this.duration,model:this.model});// shows the initial random distribute data	
+		this.transitionView = new HayStackGraphView({view:this.viewType,duration:this.duration,model:this.model});// shows the initial random distribute data	
 		var that=this;
 		update();
 		function update(){		
@@ -199,44 +263,44 @@ define([ 'jquery',
 				return;	
 			}
 							// 
-			console.log("length :"+passes.length);
-			pass = passes.pop();
-			that.model.set({data:pass});
-			if(passes.length!=0){
-			setTimeout(update,that.duration);
-		}
+							console.log("length :"+passes.length);
+							pass = passes.pop();
+							that.model.set({data:pass});
+							if(passes.length!=0){
+								setTimeout(update,that.duration);
+							}
 
-		}
-		
-		
-		
+						}
 
-	},
-	refresh:function(){
-		this.cancelPreviousUpdate=true;
-		if(this.token=="hs"){
+
+
+
+					},
+					refresh:function(){
+						this.cancelPreviousUpdate=true;
+						if(this.token=="hs"){
 			/*calling after extra 10 ms of duration so that previous
 				update function could stop first. 
 				all JS functions that takes functions as arguments
 				like (setTimeout) takes method reference i.e.  'this.func' not
 				method call i.e. this.func(). 
-			*/
-			setTimeout(this.drawHayStackTransition,this.duration+10); 
-		}else{
-			
-			setTimeout(this.drawLineTransition,this.duration+10);
+				*/
+				setTimeout(this.drawHayStackTransition,this.duration+10); 
+			}else{
+
+				setTimeout(this.drawLineTransition,this.duration+10);
+			}
+
+		},
+		showCode:function(){
+			console.log("sc");
+			this.view.render({token:this.token});
+		},
+		cleanCodeArea:function(){
+			$("#code-div").empty();
 		}
-		
-	},
-	showCode:function(){
-		console.log("sc");
-		this.view.render({token:this.token});
-	},
-	cleanCodeArea:function(){
-		$("#code-div").empty();
-	}
 
 
- });
+	});
 return AllSortView;
 });

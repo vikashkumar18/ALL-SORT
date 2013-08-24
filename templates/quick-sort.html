@@ -1,0 +1,209 @@
+<script type="text/javascript">SyntaxHighlighter.highlight();</script>
+<%if (token == 'lg'){%>
+<pre class="brush: js;">
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  margin-top: 225px;
+}
+
+line {
+  /*stroke: #000;*/
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+var actualArray=[], passes=[];
+var w = 960,
+    h = 50;
+    
+var n = 240,
+    height = d3.scale.linear().domain([0,n]).range([5,245]),
+    x = d3.scale.linear().domain([0, n]).range([h, w - h]),
+    a = d3.scale.linear().domain([0, n - 1]).range([90 + 60, 270 - 60]),
+    data = d3.shuffle(d3.range(n)),
+    duration = 100;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", w)
+    .attr("height", 500);
+
+var line = svg.selectAll("line")
+    .data(data)
+  .enter().append("line")
+    .attr("x1", 0)
+    .attr("y1", 245)
+    .attr("x2", 0)
+    .attr("y2", function(d){return (245-height(d));})
+    .attr("transform", transform);
+<%}else{%>
+  <pre class="brush: js;">
+  <!DOCTYPE html>
+  <meta charset="utf-8">
+  <style>
+
+  body {
+    margin-top: 225px;
+  }
+
+  line {
+   /* stroke: #000;*/
+    stroke-width: 1.5px;
+  }
+
+  </style>
+  <body>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+
+  var actualArray=[], passes=[];
+  var w = 960,
+  h = 50;
+
+  var n = 240,
+  x = d3.scale.linear().domain([0, n]).range([h, w - h]),
+  a = d3.scale.linear().domain([0, n - 1]).range([90 + 60, 270 - 60]),
+  data = d3.shuffle(d3.range(n)),
+  duration = 250;
+
+  var svg = d3.select("body").append("svg")
+  .attr("width", w)
+  .attr("height", h);
+
+  var line = svg.selectAll("line")
+  .data(data)
+  .enter().append("line")
+  .attr("x1", 0)
+  .attr("y1", 0)
+  .attr("x2", 0)
+  .attr("y2", h)
+  .attr("transform", transform);
+  <%}%>
+start();
+
+// Start the animation!
+function start() {
+  var passes = HelperQuickSort(data).reverse();
+
+  update();
+
+  function update() {
+    var pass = passes.pop();
+
+    line.data(pass.array, Number)
+    .attr("stroke",function(i){
+          if(i>=pass.start && i<=pass.end){
+            console.log("here");
+            return "green";
+          }else if(i==pass.pivot){
+            return "red";
+          }else{
+            return "black";
+          }
+        })
+      .transition()
+        .duration(duration)
+        
+        .attr("transform", transform);
+       
+        
+
+    if (passes.length) {
+
+      setTimeout(update, duration);
+    } else {
+      d3.shuffle(data);
+      //setTimeout(start, duration );
+    }
+  }
+}
+
+<%if(token =="lg"){%>
+ function transform(d, i) {
+   
+   return "translate(" + x(i) + "," + h + ")";
+ }
+ <%}else{%>
+  function transform(d, i) {
+    
+    return "translate(" + x(i) + ")rotate(" + a(d) + ","+0+","+(100+h)+")";
+  }
+  <%}%>
+
+
+
+function HelperQuickSort(array){
+  var start = 0;
+  var end= array.length -1;
+  actualArray = array;
+  QuickSort(start,end);
+ 
+  return passes;
+}
+
+function QuickSort(start,end){
+
+  var data;
+  var i= start;
+  var k = end;
+  var diff = end -start;
+ 
+  if(diff >= 1){
+var pivot = actualArray[start];
+  //console.log("pivot "+pivot);
+    while(k>i){    // till right--> left index is greater than left--> right index
+        while(actualArray[i]<=pivot && i<=end && k>i){  //from the left look for first element 
+          i++;                                          //greater than pivot
+        }
+        while(actualArray[k]>pivot && k>=start && k>=i){ // from the right look for first element
+          k--;                                            // smaller than pivot
+        }
+        if(k>i){
+          swap (i,k);
+          data = {
+            array : actualArray.slice(),
+            pivot : start,
+            start  : start+1,
+            end   : end
+          }
+          passes.push(data);
+        }
+        
+
+    }
+    swap (start,k);
+     data = {
+            array : actualArray.slice(),
+            pivot : k,
+            start  : start,
+            end   : end
+          }
+          passes.push(data);
+    QuickSort(start,k-1);
+    QuickSort(k+1,end);
+  }
+   else{
+    return;
+   }
+   
+  }
+
+  function swap(i,j){
+    var temp = actualArray[i];
+    actualArray[i]=actualArray[j];
+    actualArray[j]=temp;
+
+  }
+
+
+
+
+
+</script>

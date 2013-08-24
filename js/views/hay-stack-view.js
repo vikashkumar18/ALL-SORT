@@ -42,7 +42,23 @@ define([ 'jquery', 'underscore', 'backbone','d3','custom'],
 			render:function(){
 				var that = this;
 				this.data = this.model.get('data');
-				if(this.data.array!= undefined){
+				if(this.options.view == "QuickSort"){
+					this.line.data(this.data.array, Number)
+					.attr("stroke",function(i){
+					      if(i>=that.data.start && i<=that.data.end){
+					        
+					        return "green";
+					      }else if(i==that.data.pivot){
+					        return "red";
+					      }
+					      else{
+					      	return "black";
+					      }
+					    })
+					.transition()
+					.duration (this.duration)
+					.attr("transform", this.lineGraphTransform);
+				}else if(this.data.array!= undefined){
 					this.line.data(this.data.array, Number)
 					.attr("stroke",function(i){
 					      if(i>=that.data.start && i<=that.data.pivot){
